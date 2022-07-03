@@ -1,0 +1,11 @@
+version: '3'
+
+services:
+  server:
+    container_name: server_note
+    build: ./services/server
+    environment:
+      BASE_URL: /api
+    ports:
+      - 5000:5000
+    command: uvicorn src.main:app --host 0.0.0.0 --port 5000
