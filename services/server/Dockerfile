@@ -1,0 +1,20 @@
+FROM python:3.10.4-buster
+
+RUN mkdir app
+WORKDIR /app
+
+# set environment variables
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
+ENV PATH="${PATH}:/root/.local/bin"
+ENV PYTHONPATH=.
+
+COPY requirements.txt .
+RUN pip install --upgrade pip
+RUN pip install -r requirements.txt
+
+# for migrations
+# COPY migrations/ ./migrations
+# COPY pyproject.toml .
+
+COPY src/ ./src
