@@ -31,4 +31,4 @@ async def create_record(user) -> RecordSchema:
 
 #     raise HTTPException(status_code=403, detail=f"Not authorized to delete")
 
-async def query_field(user) -> RecordSchema:
+# async def query_field(user) -> RecordSchema:
