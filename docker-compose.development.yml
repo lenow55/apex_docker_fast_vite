@@ -1,9 +1,22 @@
 version: '3'
 
 services:
-  backend:
+  server:
     volumes:
-      - ./services/backend:/app
+      - ./services/server:/app
     command: uvicorn src.main:app --reload --host 0.0.0.0 --port 5000
     environment:
       BASE_URL: http://localhost:5000
+
+  client:
+    build:
+      context: ./services/client
+      dockerfile: Dockerfile.Dev
+    stdin_open: true
+    tty: true
+    volumes:
+      - './services/client:/app'
+      - '/usr/src/app/services/client/node_modules'
+        #environment:
+        #  BASE_URL: /api
+    command: npm run dev
