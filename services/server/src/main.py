@@ -6,3 +6,7 @@ app = FastAPI()
 @app.get("/")
 def test():
     return Response("TEST")
+
+@app.get("/home")
+def test2():
+    return Response("TEST2")
