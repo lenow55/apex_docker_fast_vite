@@ -1,0 +1,6 @@
+{
+    "volar.takeOverMode.enabled": true,
+   /// "volar.useWorkspaceTsdk": true,
+    "volar.vueserver.useSecondServer": true,
+    "tsserver.enable": false
+}
