@@ -2,6 +2,7 @@
 import { defineComponent } from 'vue'
 import VueApexCharts from 'vue3-apexcharts'
 
+
 export default defineComponent({
     components: {
         apexchart: VueApexCharts,
@@ -15,7 +16,7 @@ export default defineComponent({
                 }
             },
             series: [
-                [44, 55, 41, 17, 15],
+                [42, 55, 41, 17, 15],
                 [43, 78, 90, 12, 5],
                 [44, 55, 41, 17, 15]
             ]
