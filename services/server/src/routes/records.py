@@ -1,7 +1,7 @@
 from fastapi import APIRouter, HTTPException
 
 import src.crud.records as crud
-from schemas.records import RecordSchema
+from src.schemas.records import RecordSchema
 
 
 router = APIRouter()
