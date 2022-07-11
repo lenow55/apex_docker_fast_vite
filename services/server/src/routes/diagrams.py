@@ -1,6 +1,7 @@
 from fastapi import APIRouter
 from typing import List
 from fastapi import Body
+from src.crud.diagrams import get_diagrams
 
 from src.schemas.records import DiagramRule
 from src.schemas.records import DiagramData
@@ -11,8 +12,8 @@ router = APIRouter()
 @router.post("/diagrams", response_model=List[DiagramData],
              description="Передаём правила для фильтров на диаграмму,\
              \n получаем данные для диаграм")
-async def get_diagrams_data(rules: List[DiagramRule] | None = Body()):
-    return rules
+async def get_diagrams_data(rules: List[DiagramRule]= Body(None, description="Задаём фильтры для диаграм")):
+    return await get_diagrams(rules)
 
 # @router.delete(
 #     "/user/{user_id}",
