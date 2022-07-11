@@ -14,7 +14,7 @@ RUN pip install --upgrade pip
 RUN pip install -r requirements.txt
 
 # for migrations
-# COPY migrations/ ./migrations
-# COPY pyproject.toml .
+#COPY migrations/ ./migrations
+#COPY pyproject.toml .
 
 COPY src/ ./src

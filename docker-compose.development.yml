@@ -6,6 +6,7 @@ services:
       - ./services/server:/app
     command: uvicorn src.main:app --reload --host 0.0.0.0 --port 5000
     environment:
+      DATABASE_URL: postgres://apex_fastapi:LGIKLKks87hk65T@db:5432/apex_fastapi_dev
       BASE_URL: http://localhost:5000
 
   client:
@@ -20,3 +21,14 @@ services:
         #environment:
         #  BASE_URL: /api
     command: npm run dev
+
+  db:
+    environment:
+      POSTGRES_USER: apex_fastapi
+      POSTGRES_PASSWORD: LGIKLKks87hk65T
+      POSTGRES_DB: apex_fastapi_dev
+    volumes:
+      - postgres_apex_dev:/var/lib/postgresql/data/
+
+volumes:
+  postgres_apex_dev:
