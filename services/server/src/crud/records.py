@@ -1,21 +1,20 @@
 from fastapi import HTTPException, Response
 
 from src.database.models import Records
-from schemas.records import RecordSchema
-from tortoise.expressions import Q
+from src.schemas.records import RecordSchema
 
 
-async def create_record(record) -> Response:
+
+async def create_record(record: RecordSchema) -> Response:
 
     try:
+        print(record.dict(exclude_unset=True))
         await Records.create(**record.dict(exclude_unset=True))
-    except Exception:
+    except Exception as ex:
+        print(ex)
         raise HTTPException(status_code=400, detail=f"Произошла какая-то ошибка")
 
     return Response(status_code=200, content="Sucess")
-
-
-async def get_diagrams(rules: List[]):
 
 # async def delete_user(user_id, current_user) -> Status:
 #     try:
