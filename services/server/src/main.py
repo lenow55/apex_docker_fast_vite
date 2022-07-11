@@ -18,7 +18,3 @@ app.include_router(records.router)
 @app.get("/")
 def test():
     return "TEST"
-
-@app.get("/home")
-def test2():
-    return "TEST2"
