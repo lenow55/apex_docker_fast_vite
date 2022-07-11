@@ -24,7 +24,7 @@ services:
         #  BASE_URL: /api
     command: npm run build
     depends_on:
-      - backend
+      - server
 
   db:
     container_name: apex_database_pg
