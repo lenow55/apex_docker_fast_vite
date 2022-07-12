@@ -1,9 +1,8 @@
 {
     "python.venvPath": "../.venv/",
-    "python.formatting.autopep8Path": "/home/nemo/.local/bin/autopep8",
+    "python.formatting.autopep8Path": "/home/lenow/.local/bin/autopep8",
     "python.formatting.autopep8Args": [
         "--max-line-length",
-        "120",
-        "--experimental"
+        "120"
     ]
 }
