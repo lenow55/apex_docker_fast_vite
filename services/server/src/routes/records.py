@@ -1,8 +1,8 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter
 
 import src.crud.records as crud
 from src.schemas.records import RecordSchema
-
+from typing import List
 
 router = APIRouter()
 
@@ -11,9 +11,16 @@ router = APIRouter()
 
 
 @router.post(
-    "/records", response_model=None
+    "/record", response_model=None
 )
 async def create_record(
     record: RecordSchema
 ):
     return await crud.create_record(record)
+
+
+@router.get(
+    "/records", response_model=List[RecordSchema]
+)
+async def get_records():
+    return await crud.get_records()

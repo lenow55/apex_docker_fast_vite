@@ -3,6 +3,7 @@ from fastapi import HTTPException, Response
 from src.database.models import Records
 from src.schemas.records import RecordSchema
 
+from typing import List
 
 
 async def create_record(record: RecordSchema) -> Response:
@@ -15,6 +16,13 @@ async def create_record(record: RecordSchema) -> Response:
         raise HTTPException(status_code=400, detail=f"Произошла какая-то ошибка")
 
     return Response(status_code=200, content="Sucess")
+
+
+async def get_records() -> List[RecordSchema]:
+    try:
+        return await RecordSchema.from_queryset(Records.all())
+    except Exception:
+        raise HTTPException(status_code=400, detail=f"Произошла какая-то ошибка")
 
 # async def delete_user(user_id, current_user) -> Status:
 #     try:
