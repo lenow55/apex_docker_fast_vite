@@ -18,6 +18,13 @@ async def create_record(
 ):
     return await crud.create_record(record)
 
+@router.post(
+    "/records", response_model=None
+)
+async def create_records(
+    records: List[RecordSchema]
+):
+    return await crud.create_records(records)
 
 @router.get(
     "/records", response_model=List[RecordSchema]
