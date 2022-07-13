@@ -15,7 +15,9 @@ router = APIRouter()
 async def get_diagrams_data(
         rules: List[DiagramRule] = Body(
             None,
-            description="Задаём фильтры для диаграм")):
+            description="Задаём фильтры для диаграм"
+        )
+    ):
     return await get_diagrams(rules)
 
 # @router.delete(
