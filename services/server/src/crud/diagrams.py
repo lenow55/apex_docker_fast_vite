@@ -21,7 +21,7 @@ async def get_diagrams(rules: List[DiagramRule]):  # Тут делаем зап�
                 await Records
                     .filter(Q(*filters_list, join_type='AND'))
                     .annotate(count=Count(field))
-                    #.group_by(field)
+                    .group_by(field)
                     .values(field, "count"))
     except Exception as ex:
         print(ex)
