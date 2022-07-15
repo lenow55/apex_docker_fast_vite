@@ -13,16 +13,19 @@ from src.schemas.diagram import DiagramData
 
 async def get_diagrams(rules: List[DiagramRule]):  # Тут делаем запрос к базе данных
     data_diagrams = []
-    #d_var_1 = DiagramData(id=1, name="diagram1", series=[], cat_ids=[], categories=["positive", "negative"])
+    #d_var_1 = DiagramData(
+    #    id=1, name="diagram1", series=[],
+    #    cat_ids=[],
+    #    categories=["positive", "negative"])
     filters_list = [Q(val_1=True), Q(val_2=False)]
     try:
         for field in CategoriesRecordSchema.__fields__.keys():
             data_diagrams.append(
                 await Records
-                    .filter(Q(*filters_list, join_type='AND'))
-                    .annotate(count=Count(field))
-                    .group_by(field)
-                    .values(field, "count"))
+                .filter(Q(*filters_list, join_type='AND'))
+                .annotate(count=Count(field))
+                .group_by(field)
+                .values(field, "count"))
     except Exception as ex:
         print(ex)
     print(data_diagrams)
