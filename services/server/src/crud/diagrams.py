@@ -15,8 +15,7 @@ from src.validator.validator import Validator
 async def get_diagrams(rules: List[DiagramRule]):  # Тут делаем запрос к базе данных
     validator = Validator()
     data_diagrams = []
-    filters_list = []
-    filters_list = [Q(val_1=True), Q(val_2=False)]
+    filters_list = validator.get_filters(rules=rules)
     try:
         for column in validator.get_fields():
             data_diagrams.append(
