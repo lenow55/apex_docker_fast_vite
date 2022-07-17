@@ -58,8 +58,15 @@ export default defineComponent({
 
 <template>
   <div>
-    <apexchart :options="options" :series="series" @click="click" @legendClick="legendClick" @markerClick="markerClick"
-      @selection="selection" @dataPointSelection="dataPointSelection">
+    <apexchart
+      :options="options"
+      :series="series"
+      @click="click"
+      @legendClick="legendClick"
+      @markerClick="markerClick"
+      @selection="selection"
+      @dataPointSelection="dataPointSelection"
+    >
     </apexchart>
   </div>
 </template>
