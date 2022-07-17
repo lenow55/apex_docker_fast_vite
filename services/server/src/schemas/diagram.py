@@ -1,13 +1,16 @@
 from pydantic import BaseModel, Field
 from typing import List
 
+class Data(BaseModel):
+    id: int
+    name: str
+    count: int
 
 class DiagramData(BaseModel):
     id: int
     name: str
-    series: List[int]
-    cat_ids: List[int]
-    categories: List[str]
+    description: str
+    data: List[Data]
 
 class DiagramRule(BaseModel):
     id_diagram: int = Field(ge=0, description="The id must be >= 0")
