@@ -1,5 +1,5 @@
 import imp
-from tortoise.expressions import Q
+from tortoise.expressions import Q, Expression
 from tortoise import filters
 from tortoise.functions import Count
 from typing import List
@@ -18,6 +18,10 @@ async def get_diagrams(rules: List[DiagramRule]):  # Тут делаем зап�
     #    cat_ids=[],
     #    categories=["positive", "negative"])
     filters_list = [Q(val_1=True), Q(val_2=False)]
+    void_fl = Q(**{'val_1':"True"})
+    print(filters_list[0].filters)
+    print(filters_list[1].filters)
+    print(void_fl.filters)
     try:
         for field in CategoriesRecordSchema.__fields__.keys():
             data_diagrams.append(
