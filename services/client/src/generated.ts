@@ -54,7 +54,7 @@ class Chart {
     id: number;
     name: string;
     description: string;
-    data: DataChart | null;
+    data: DataChart[] | null;
 
     constructor(data?: any) {
         const d: any = (data && typeof data === 'object') ? ToObject(data) : {};
@@ -68,6 +68,18 @@ class Chart {
         const cfg: any = {};
         return ToObject(this, cfg);
     }
+
+    generateSerie(): number[] {
+        return Array.isArray(this.data) ? this.data.map((v: any) => v.count) : []
+    }
+
+    generateIds(): number[] {
+        return Array.isArray(this.data) ? this.data.map((v: any) => v.id) : []
+    }
+
+    generateCategories(): string[] {
+        return Array.isArray(this.data) ? this.data.map((v: any) => v.name) : []
+    }
 }
 
 class ChartGroup {
@@ -76,10 +88,9 @@ class ChartGroup {
     charts: Chart[] | null;
 
     constructor(data?: any) {
-        const d: any = (data && typeof data === 'object') ? ToObject(data) : {};
+        this.charts = Array.isArray(data) ? data.map((v: any) => new Chart(v)) : null;
         this.name = "Диаграммы";
         this.description = "Группа диаграмм";
-        this.charts = Array.isArray(d.charts) ? d.charts.map((v: any) => new Chart(v)) : null;
     }
 
     toObject(): any {
