@@ -117,6 +117,7 @@ export default defineComponent({
   width: 100%;
   float: left;
   transition: width 0.2s;
+  margin: 10px;
 }
 
 @media only screen and (min-width: 600px) {
@@ -125,9 +126,9 @@ export default defineComponent({
   }
 }
 
-@media only screen and (min-width: 1000px) {
+@media (min-width: 1024px) {
   .chart-wrapper {
-    width: 33.333%;
+    width: 31%;
   }
 }
 </style>
