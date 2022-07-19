@@ -41,15 +41,25 @@ class DataChart {
     id: number;
     name: string;
     count: number;
+    //hidden: boolean;
 
     constructor(data?: any) {
         const d: any = (data && typeof data === 'object') ? ToObject(data) : {};
         this.id = ('id' in d) ? d.id as number : 0;
         this.name = ('name' in d) ? d.name as string : '';
-        this.count = ('id' in d) ? d.count as number : 0;
+        this.count = ('count' in d) ? d.count as number : 0;
+        //this.hidden = false;
+    }
+
+    update(data ? : any) {
+        const d: any = (data && typeof data === 'object') ? ToObject(data) : {};
+        this.id = ('id' in d) ? d.id as number : 0;
+        this.name = ('name' in d) ? d.name as string : '';
+        this.count = ('count' in d) ? d.count as number : 0;
     }
 
 }
+
 class Chart {
     id: number;
     name: string;
@@ -80,6 +90,28 @@ class Chart {
     generateCategories(): string[] {
         return Array.isArray(this.data) ? this.data.map((v: any) => v.name) : []
     }
+
+    update(data?: any) {
+        const d: any = (data && typeof data === 'object') ? ToObject(data) : {};
+        this.name = ('name' in d) ? d.name as string : '';
+        this.description = ('description' in d) ? d.description as string : '';
+        if(Array.isArray(this.data)) {
+            if (Array.isArray(d.data)) {
+                this.data.map( //для каждой диаграммы
+                    (v: DataChart) => {
+                        v.update( //вызываем обновление данных
+                            data.filter( //полученными данными
+                                (obj: any) => obj.id == v.id
+                            ) //по условию, что id получ совпадает с id диаграммы
+                        )
+                    }
+                )
+            } 
+        }
+        else {
+            this.data = Array.isArray(d.data) ? d.data.map((v: any) => new DataChart(v)) : null;
+        }
+    }
 }
 
 class ChartGroup {
@@ -96,6 +128,30 @@ class ChartGroup {
     toObject(): any {
         const cfg: any = {};
         return ToObject(this, cfg);
+    }
+
+    //для централлизованной обработки скрытых полей в диаграмме
+    updateCharts(data?: any): void {
+        //ну и нагородил,
+        //короче, тут сначала проверяется, что у нас вообще есть диаграммы
+        //если нет, то берём из полученных данных
+        //иначе для каждой диаграммы
+        if (Array.isArray(this.charts)) {
+            if (Array.isArray(data)) {
+                this.charts.map( //для каждой диаграммы
+                    (v: Chart) => {
+                        v.update( //вызываем обновление данных
+                            data.filter( //полученными данными
+                                (obj: any) => obj.id == v.id
+                            ) //по условию, что id получ совпадает с id диаграммы
+                        )
+                    }
+                )
+            }
+        }
+        else {
+            this.charts = Array.isArray(data) ? data.map((v: any) => new Chart(v)) : null;
+        }
     }
 }
 
