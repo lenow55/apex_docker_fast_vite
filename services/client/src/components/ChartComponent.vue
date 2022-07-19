@@ -1,5 +1,10 @@
 <template>
-  <apexchart v-if="options" :options="options" :series="chart.generateSerie()">
+  <apexchart
+    v-if="options"
+    :options="options"
+    :series="chart.generateSerie()"
+    @dataPointSelection="dataPointSelection"
+  >
   </apexchart>
 </template>
 
@@ -36,6 +41,8 @@ export default defineComponent({
       },
     };
   },
+  setup() {
+  },
   // created() {
   //   this.generateDiagram();
   // },
@@ -66,9 +73,9 @@ export default defineComponent({
     // selection(chartContext: any, { xaxis, yaxis }: any) {
     //   console.log("selection", chartContext, xaxis, yaxis);
     // },
-    // dataPointSelection(event: any, chartContext: any, config: any) {
-    //   console.log("dataPointSelection", event, chartContext, config);
-    // },
+    dataPointSelection(event: any, chartContext: any, config: any) {
+      console.log("dataPointSelection", event, chartContext, config);
+    },
   },
 });
 </script>
