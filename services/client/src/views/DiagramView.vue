@@ -5,10 +5,12 @@ import type { ApexOptions } from "apexcharts";
 import { ChartGroup } from "@/generated";
 import Chart from "@/components/ChartComponent.vue";
 import axios from "axios";
+import type { Rule4Chart } from "@/generated";
 
 type AppState = {
   loading: boolean;
   chartsGroup: ChartGroup;
+  chartRules: Rule4Chart[];
   error: unknown;
 };
 
@@ -31,6 +33,12 @@ export default defineComponent({
     const app_state = ref<AppState>({
       loading: true,
       chartsGroup: new ChartGroup(),
+      chartRules: [
+        {
+          id_diagram: 0,
+          include_fields_id: [0],
+        },
+      ],
       error: undefined,
     });
 
@@ -73,9 +81,27 @@ export default defineComponent({
       }
       console.log(app_state.value.chartsGroup.charts);
     }
+
+    async function filter() {
+      try {
+        const chartsResp = await axios.post(
+          "/diagrams",
+          app_state.value.chartRules
+        );
+        console.log(chartsResp.data);
+        app_state.value.chartsGroup = new ChartGroup(chartsResp.data);
+      } catch (err: any) {
+        console.log(err);
+      } finally {
+        app_state.value.loading = false;
+      }
+      console.log(app_state.value.chartsGroup.charts);
+    }
+
     return {
       app_state,
       load,
+      filter,
       // options,
       // series,
       // click,
@@ -87,6 +113,9 @@ export default defineComponent({
   },
   created() {
     this.load();
+    setTimeout(() => {
+      this.filter();
+    }, 3000);
   },
 });
 </script>

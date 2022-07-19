@@ -4,6 +4,8 @@
     :options="options"
     :series="chart.generateSerie()"
     @dataPointSelection="dataPointSelection"
+    @selection="selection"
+    :key="chart.id"
   >
   </apexchart>
 </template>
@@ -38,6 +40,11 @@ export default defineComponent({
           id: this.chart.id,
         },
         labels: this.chart.generateCategories(),
+        legend: {
+          onItemClick: {
+            toggleDataSeries: true //эта штука вкрубает нажатие на легенду
+          }
+        }
       },
     };
   },
@@ -74,6 +81,9 @@ export default defineComponent({
     //   console.log("selection", chartContext, xaxis, yaxis);
     // },
     dataPointSelection(event: any, chartContext: any, config: any) {
+      console.log("dataPointSelection", event, chartContext, config);
+    },
+    selection(event: any, chartContext: any, config: any) {
       console.log("dataPointSelection", event, chartContext, config);
     },
   },
