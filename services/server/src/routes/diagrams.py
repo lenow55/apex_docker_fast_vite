@@ -1,5 +1,5 @@
 from fastapi import APIRouter
-from typing import List
+from typing import List, Tuple
 from fastapi import Body
 from src.crud.diagrams import get_diagrams
 
@@ -15,10 +15,10 @@ router = APIRouter()
 async def get_diagrams_data(
         rules: List[DiagramRule] = Body(
             None,
-            description="Задаём фильтры для диаграм"
+            description="Задаём фильтры для диаграм",
         )
     ):
-    return await get_diagrams(rules)
+    return await get_diagrams(list(set(rules)))
 
 # @router.delete(
 #     "/user/{user_id}",

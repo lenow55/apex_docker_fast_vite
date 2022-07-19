@@ -2,7 +2,7 @@ import imp
 from tortoise.expressions import Q, Expression
 from tortoise import filters
 from tortoise.functions import Count
-from typing import List
+from typing import List, Tuple
 
 from src.schemas.records import RecordSchema
 from src.schemas.records import CategoriesRecordSchema

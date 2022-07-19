@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Tuple
 
 from tortoise.expressions import Q
 from src.schemas.diagram import Data, DiagramData, DiagramRule
