@@ -57,10 +57,15 @@ class Validator():
     def get_fields(self):
         return (i.db_name for i in self.column_to_id)
 
-    def get_filters(self, rules: List[DiagramRule]) -> List[Q]:
+    def get_filters(self, rules_list: List[DiagramRule])  -> List[Q]:
+        try:
+            rules_list = list(set(rules_list))
+        except TypeError:
+            pass
+
         query: List[Q] = []
         try:
-            for rule in rules:
+            for rule in rules_list:
                 dt = [i for i in self.column_to_id if i.id == rule.id_diagram][0]
                 for index in rule.include_fields_id:
                     cat_name = [i for i in self.cat_to_id if i.id == index]

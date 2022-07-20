@@ -18,7 +18,7 @@ async def get_diagrams_data(
             description="Задаём фильтры для диаграм",
         )
     ):
-    return await get_diagrams(list(set(rules)))
+    return await get_diagrams(rules)
 
 # @router.delete(
 #     "/user/{user_id}",
