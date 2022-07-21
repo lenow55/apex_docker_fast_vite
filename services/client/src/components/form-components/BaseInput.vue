@@ -5,18 +5,33 @@
     :placeholder="label"
     v-model="theModel.str"
     class="field"
-  >
+  />
+    <input
+    v-bind="$attrs"
+    :placeholder="label"
+    v-model="theModel.id"
+    class="field"
+  />
+    <input
+    v-bind="$attrs"
+    :placeholder="label"
+    v-model="theModel.description"
+    class="field"
+  />
+  <p>theModel.str</p>
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, type PropType } from "vue"
+import { computed, defineComponent, type PropType } from "vue";
 
 interface OurModelType {
   str: string;
+  id: number;
+  description: string
 }
 
 export default defineComponent({
-  emits: ['update:modelValue'],
+  emits: ["update:modelValue"],
   props: {
     modelValue: {
       type: Object as PropType<OurModelType>, // Type Annotation
@@ -24,15 +39,15 @@ export default defineComponent({
     },
     label: {
       type: String,
-      default: ''
+      default: "",
     },
   },
   setup(props, { emit }) {
     const theModel = computed({
       get: () => props.modelValue,
-      set: (value) => emit('update:modelValue', value),
+      set: (value) => emit("update:modelValue", value),
     });
     return { theModel };
-  }
-})
+  },
+});
 </script>
