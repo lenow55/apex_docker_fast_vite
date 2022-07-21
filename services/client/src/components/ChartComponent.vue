@@ -4,22 +4,15 @@
     :options="options"
     :series="chart.generateSerie()"
     @dataPointSelection="dataPointSelection"
-    @selection="selection"
     :key="chart.id"
   >
   </apexchart>
 </template>
 
 <script lang="ts">
-import type { Chart } from "@/generated";
+import type { Chart, DataChart } from "@/generated";
 import { defineComponent } from "vue";
 import VueApexCharts from "vue3-apexcharts";
-
-// type GenerateData = {
-//   serie: number[];
-//   categories: string[];
-//   ids: number[];
-// };
 
 export default defineComponent({
   name: "Chart",
@@ -42,17 +35,13 @@ export default defineComponent({
         labels: this.chart.generateCategories(),
         legend: {
           onItemClick: {
-            toggleDataSeries: true //эта штука вкрубает нажатие на легенду
-          }
-        }
+            toggleDataSeries: true, //эта штука вкрубает нажатие на легенду
+          },
+        },
       },
     };
   },
-  setup() {
-  },
-  // created() {
-  //   this.generateDiagram();
-  // },
+  setup() {},
   methods: {
     // generateDiagram() {
     //   console.log(this.chart.generateSerie())
@@ -81,10 +70,14 @@ export default defineComponent({
     //   console.log("selection", chartContext, xaxis, yaxis);
     // },
     dataPointSelection(event: any, chartContext: any, config: any) {
-      console.log("dataPointSelection", event, chartContext, config);
-    },
-    selection(event: any, chartContext: any, config: any) {
-      console.log("dataPointSelection", event, chartContext, config);
+      console.log("dataPointSelection", config.dataPointIndex);
+      //ну тут точно данные не могут быть равны null или могут?
+      //вот тут про написание лучше спросить
+      this.chart.changeVisible(config.dataPointIndex);
+      this.$emit("addRule", {
+        id: this.chart.id,
+        index: config.dataPointIndex,
+      });
     },
   },
 });

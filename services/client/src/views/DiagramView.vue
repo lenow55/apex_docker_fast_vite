@@ -69,6 +69,11 @@ export default defineComponent({
     //   console.log("dataPointSelection", event, chartContext, config);
     // }
 
+    function addRule(id_chart: number, index: number) {
+      app_state.value.chartRules[0].id_diagram = id_chart;
+      app_state.value.chartRules[0].include_fields_id[0] = index;
+    }
+
     async function load() {
       try {
         const chartsResp = await axios.post("/diagrams");
@@ -83,25 +88,31 @@ export default defineComponent({
     }
 
     async function filter() {
+      console.log("befo filter", app_state.value.chartsGroup.charts);
+      app_state.value.loading = true;
       try {
         const chartsResp = await axios.post(
           "/diagrams",
           app_state.value.chartRules
         );
-        console.log(chartsResp.data);
-        app_state.value.chartsGroup = new ChartGroup(chartsResp.data);
+        app_state.value.chartsGroup.updateCharts(chartsResp.data);
       } catch (err: any) {
         console.log(err);
       } finally {
         app_state.value.loading = false;
       }
-      console.log(app_state.value.chartsGroup.charts);
+      console.log("afte filter", app_state.value.chartsGroup.charts);
+    }
+    function log(data: any) {
+      console.log(data);
     }
 
     return {
       app_state,
       load,
       filter,
+      addRule,
+      log,
       // options,
       // series,
       // click,
@@ -113,9 +124,9 @@ export default defineComponent({
   },
   created() {
     this.load();
-    setTimeout(() => {
-      this.filter();
-    }, 3000);
+    // setTimeout(() => {
+    //   this.filter();
+    // }, 3000);
   },
 });
 </script>
@@ -130,7 +141,15 @@ export default defineComponent({
       :key="c.id"
       class="chart-wrapper"
     >
-      <chart :chart="c" />
+      <chart
+        :chart="c"
+        @addRule="
+          (e) => {
+            addRule(e.id, e.index);
+            filter();
+          }
+        "
+      />
     </div>
   </div>
 </template>
