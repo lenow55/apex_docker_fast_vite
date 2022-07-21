@@ -41,21 +41,26 @@ class DataChart {
     id: number;
     name: string;
     count: number;
-    //hidden: boolean;
+    hidden: boolean;
 
     constructor(data?: any) {
         const d: any = (data && typeof data === 'object') ? ToObject(data) : {};
         this.id = ('id' in d) ? d.id as number : 0;
         this.name = ('name' in d) ? d.name as string : '';
         this.count = ('count' in d) ? d.count as number : 0;
-        //this.hidden = false;
+        this.hidden = false;
     }
 
-    update(data ? : any) {
+    update(data?: any) {
         const d: any = (data && typeof data === 'object') ? ToObject(data) : {};
         this.id = ('id' in d) ? d.id as number : 0;
         this.name = ('name' in d) ? d.name as string : '';
         this.count = ('count' in d) ? d.count as number : 0;
+    }
+
+    changeVisible(): boolean { //возвращает получившееся значение
+        this.hidden = (this.hidden == false);
+        return this.hidden
     }
 
 }
@@ -65,6 +70,7 @@ class Chart {
     name: string;
     description: string;
     data: DataChart[] | null;
+    count_visible: number;
 
     constructor(data?: any) {
         const d: any = (data && typeof data === 'object') ? ToObject(data) : {};
@@ -72,6 +78,7 @@ class Chart {
         this.name = ('name' in d) ? d.name as string : '';
         this.description = ('description' in d) ? d.description as string : '';
         this.data = Array.isArray(d.data) ? d.data.map((v: any) => new DataChart(v)) : null;
+        this.count_visible = Array.isArray(d.data) ? d.data.length : 0;
     }
 
     toObject(): any {
@@ -80,11 +87,26 @@ class Chart {
     }
 
     generateSerie(): number[] {
-        return Array.isArray(this.data) ? this.data.map((v: any) => v.count) : []
+        return Array.isArray(this.data) ? this.data.map((v: DataChart) => v.hidden ? 0 : v.count) : []
     }
 
-    generateIds(): number[] {
-        return Array.isArray(this.data) ? this.data.map((v: any) => v.id) : []
+    changeVisible(dataIndex: number): boolean {
+        if (Array.isArray(this.data)) {
+            const dataLink: DataChart[] = this.data;
+            const dataChartLink: DataChart = dataLink[dataIndex];
+
+            if (this.count_visible > 1 || dataChartLink.hidden == true) {
+                const result: boolean = dataChartLink.changeVisible()
+                result ? this.count_visible -= 1 : this.count_visible += 1;
+            }
+        }
+        return false
+    }
+
+    getVisibleRules(): Rule4Chart[] {
+        const rules: Rule4Chart[] = []
+
+        return rules
     }
 
     generateCategories(): string[] {
@@ -92,21 +114,22 @@ class Chart {
     }
 
     update(data?: any) {
+        console.log("update Chart")
         const d: any = (data && typeof data === 'object') ? ToObject(data) : {};
         this.name = ('name' in d) ? d.name as string : '';
         this.description = ('description' in d) ? d.description as string : '';
-        if(Array.isArray(this.data)) {
-            if (Array.isArray(d.data)) {
-                this.data.map( //для каждой диаграммы
-                    (v: DataChart) => {
-                        v.update( //вызываем обновление данных
-                            data.filter( //полученными данными
-                                (obj: any) => obj.id == v.id
-                            ) //по условию, что id получ совпадает с id диаграммы
-                        )
+
+        if (Array.isArray(d.data)) {
+            if (Array.isArray(this.data)) {
+                const currentData: DataChart[] = this.data //преобразование типа, без этого ругается
+                d.data.forEach( //для каждой диаграммы
+                    (inputData: DataChart) => {
+                        currentData.find( //полученными данными
+                            (obj: any) => obj.id == inputData.id
+                        )?.update(inputData) //по условию, что id получ совпадает с id диаграммы
                     }
                 )
-            } 
+            }
         }
         else {
             this.data = Array.isArray(d.data) ? d.data.map((v: any) => new DataChart(v)) : null;
@@ -136,12 +159,14 @@ class ChartGroup {
         //короче, тут сначала проверяется, что у нас вообще есть диаграммы
         //если нет, то берём из полученных данных
         //иначе для каждой диаграммы
+        console.log("update")
         if (Array.isArray(this.charts)) {
             if (Array.isArray(data)) {
-                this.charts.map( //для каждой диаграммы
+                this.charts.forEach( //для каждой диаграммы
                     (v: Chart) => {
+                        console.log(v)
                         v.update( //вызываем обновление данных
-                            data.filter( //полученными данными
+                            data.find( //полученными данными
                                 (obj: any) => obj.id == v.id
                             ) //по условию, что id получ совпадает с id диаграммы
                         )
