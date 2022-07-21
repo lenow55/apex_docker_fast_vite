@@ -67,9 +67,9 @@ class Validator():
         try:
             for rule in rules_list:
                 dt = [i for i in self.column_to_id if i.id == rule.id_diagram][0]
-                for index in rule.include_fields_id:
+                for index in rule.exclude_fields_id:
                     cat_name = [i for i in self.cat_to_id if i.id == index]
-                    query.append(Q(**{dt.db_name: bool(cat_name)}))
+                    query.append(~Q(**{dt.db_name: bool(cat_name)}))
         except:
             pass
 

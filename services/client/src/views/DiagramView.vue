@@ -36,7 +36,7 @@ export default defineComponent({
       chartRules: [
         {
           id_diagram: 0,
-          include_fields_id: [0],
+          exclude_fields_id: [0],
         },
       ],
       error: undefined,
@@ -71,7 +71,7 @@ export default defineComponent({
 
     function addRule(id_chart: number, index: number) {
       app_state.value.chartRules[0].id_diagram = id_chart;
-      app_state.value.chartRules[0].include_fields_id[0] = index;
+      app_state.value.chartRules[0].exclude_fields_id[0] = index;
     }
 
     async function load() {

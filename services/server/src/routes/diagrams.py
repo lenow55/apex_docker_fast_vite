@@ -1,5 +1,5 @@
 from fastapi import APIRouter
-from typing import List, Tuple
+from typing import List
 from fastapi import Body
 from src.crud.diagrams import get_diagrams
 

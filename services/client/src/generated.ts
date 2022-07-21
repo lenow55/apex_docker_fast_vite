@@ -182,7 +182,7 @@ class ChartGroup {
 
 export type Rule4Chart = {
     id_diagram: number,
-    include_fields_id: number[],
+    exclude_fields_id: number[],
 }
 
 export {
