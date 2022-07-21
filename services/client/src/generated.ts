@@ -90,8 +90,9 @@ class Chart {
         return Array.isArray(this.data) ? this.data.map((v: DataChart) => v.hidden ? 0 : v.count) : []
     }
 
-    changeVisible(dataIndex: number): boolean {
+    changeVisible(dataIndex: number) {
         if (Array.isArray(this.data)) {
+            // console.log("visible")
             const dataLink: DataChart[] = this.data;
             const dataChartLink: DataChart = dataLink[dataIndex];
 
@@ -100,13 +101,23 @@ class Chart {
                 result ? this.count_visible -= 1 : this.count_visible += 1;
             }
         }
-        return false
     }
 
-    getVisibleRules(): Rule4Chart[] {
-        const rules: Rule4Chart[] = []
-
-        return rules
+    get_rule(): Rule4Chart {
+        const rule: Rule4Chart = {
+            id_diagram: this.id,
+            exclude_fields_id: []
+        }
+        if (Array.isArray(this.data)) {
+            this.data.forEach( //для каждой диаграммы
+                (v: DataChart) => {
+                    if (v.hidden == true) {
+                        rule.exclude_fields_id.push(v.id)
+                    }
+                }
+            )
+        }
+        return rule
     }
 
     generateCategories(): string[] {
@@ -114,7 +125,7 @@ class Chart {
     }
 
     update(data?: any) {
-        console.log("update Chart")
+        // console.log("update Chart")
         const d: any = (data && typeof data === 'object') ? ToObject(data) : {};
         this.name = ('name' in d) ? d.name as string : '';
         this.description = ('description' in d) ? d.description as string : '';
@@ -155,16 +166,15 @@ class ChartGroup {
 
     //для централлизованной обработки скрытых полей в диаграмме
     updateCharts(data?: any): void {
-        //ну и нагородил,
         //короче, тут сначала проверяется, что у нас вообще есть диаграммы
         //если нет, то берём из полученных данных
         //иначе для каждой диаграммы
-        console.log("update")
+        // console.log("update")
         if (Array.isArray(this.charts)) {
             if (Array.isArray(data)) {
                 this.charts.forEach( //для каждой диаграммы
                     (v: Chart) => {
-                        console.log(v)
+                        // console.log(v)
                         v.update( //вызываем обновление данных
                             data.find( //полученными данными
                                 (obj: any) => obj.id == v.id
@@ -178,12 +188,41 @@ class ChartGroup {
             this.charts = Array.isArray(data) ? data.map((v: any) => new Chart(v)) : null;
         }
     }
+
+    get_rules(): Rule4Chart[] {
+        const rules: Rule4Chart[] = []
+        if (Array.isArray(this.charts)) {
+            this.charts.forEach( //для каждой диаграммы
+                (v: Chart) => {
+                    // console.log(v)
+                    const rule: Rule4Chart = v.get_rule()
+                    if (rule.exclude_fields_id.length > 0)
+                        rules.push(rule)
+                }
+            )
+        }
+        return rules
+    }
+
+    changeVisible(id_diagram: number, dataIndex: number) {
+        if (Array.isArray(this.charts)) {
+            this.charts.find((chart: Chart) => {
+                return chart.id == id_diagram
+            })?.changeVisible(dataIndex)
+        }
+    }
 }
 
 export type Rule4Chart = {
     id_diagram: number,
     exclude_fields_id: number[],
 }
+
+export type changeData = {
+    id_chart: number,
+    changeSerieIndex: number,
+}
+
 
 export {
     // ChartDisplay,

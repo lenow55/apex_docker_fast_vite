@@ -1,4 +1,5 @@
 <template>
+  <label v-if="chart">{{ chart.name }}</label>
   <apexchart
     v-if="options"
     :options="options"
@@ -10,11 +11,12 @@
 </template>
 
 <script lang="ts">
-import type { Chart, DataChart } from "@/generated";
+import type { changeData, Chart, DataChart } from "@/generated";
 import { defineComponent } from "vue";
 import VueApexCharts from "vue3-apexcharts";
 
 export default defineComponent({
+  emits: ["hideData"],
   name: "Chart",
   components: {
     apexchart: VueApexCharts,
@@ -31,6 +33,11 @@ export default defineComponent({
         chart: {
           type: "donut",
           id: this.chart.id,
+          animations: {
+            dynamicAnimation: {
+              speed: 550, //уменьшу скорость анимации 350 => 550
+            },
+          },
         },
         labels: this.chart.generateCategories(),
         legend: {
@@ -38,46 +45,29 @@ export default defineComponent({
             toggleDataSeries: true, //эта штука вкрубает нажатие на легенду
           },
         },
+        noData: {
+          text: "Loading...",
+          align: "center",
+          verticalAlign: "middle",
+          offsetX: 0,
+          offsetY: 0,
+          style: {
+            color: '#929292',
+            fontSize: "14px",
+            fontFamily: undefined,
+          },
+        },
       },
     };
   },
-  setup() {},
   methods: {
-    // generateDiagram() {
-    //   console.log(this.chart.generateSerie())
-    // },
-    // click(event: any, chartContext: any, config: any) {
-    //   console.log("click", event, chartContext, config);
-    // },
-    // legendClick(chartContext: any, seriesIndex: any, config: any) {
-    //   console.log("legendClick", chartContext, seriesIndex, config);
-    // },
-    // markerClick(
-    //   event: any,
-    //   chartContext: any,
-    //   { seriesIndex, dataPointIndex, config }: any
-    // ) {
-    //   console.log(
-    //     "markerClick",
-    //     event,
-    //     chartContext,
-    //     seriesIndex,
-    //     dataPointIndex,
-    //     config
-    //   );
-    // },
-    // selection(chartContext: any, { xaxis, yaxis }: any) {
-    //   console.log("selection", chartContext, xaxis, yaxis);
-    // },
     dataPointSelection(event: any, chartContext: any, config: any) {
-      console.log("dataPointSelection", config.dataPointIndex);
-      //ну тут точно данные не могут быть равны null или могут?
-      //вот тут про написание лучше спросить
-      this.chart.changeVisible(config.dataPointIndex);
-      this.$emit("addRule", {
-        id: this.chart.id,
-        index: config.dataPointIndex,
-      });
+      // console.log("dataPointSelection", config.dataPointIndex);
+      const dataPoint: changeData = {
+        id_chart: this.chart.id,
+        changeSerieIndex: config.dataPointIndex,
+      };
+      this.$emit("hideData", dataPoint);
     },
   },
 });

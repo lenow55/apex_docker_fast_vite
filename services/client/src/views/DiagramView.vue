@@ -2,7 +2,7 @@
 import { defineComponent, ref, defineProps } from "vue";
 import VueApexCharts from "vue3-apexcharts";
 import type { ApexOptions } from "apexcharts";
-import { ChartGroup } from "@/generated";
+import { ChartGroup, type changeData } from "@/generated";
 import Chart from "@/components/ChartComponent.vue";
 import axios from "axios";
 import type { Rule4Chart } from "@/generated";
@@ -22,73 +22,27 @@ export default defineComponent({
   },
 
   setup() {
-    // const options = ref<ApexOptions>({
-    //   chart: {
-    //     type: "donut",
-    //     id: "vuechart-example",
-    //   },
-    // });
-    // const series = ref([30, 40, 45, 50, 49, 60, 70, 81]);
-
     const app_state = ref<AppState>({
       loading: true,
       chartsGroup: new ChartGroup(),
-      chartRules: [
-        {
-          id_diagram: 0,
-          exclude_fields_id: [0],
-        },
-      ],
+      chartRules: [],
       error: undefined,
     });
-
-    // function click(event: any, chartContext: any, config: any) {
-    //   console.log("click", event, chartContext, config);
-    // }
-    // function legendClick(chartContext: any, seriesIndex: any, config: any) {
-    //   console.log("legendClick", chartContext, seriesIndex, config);
-    // }
-    // function markerClick(
-    //   event: any,
-    //   chartContext: any,
-    //   { seriesIndex, dataPointIndex, config }: any
-    // ) {
-    //   console.log(
-    //     "markerClick",
-    //     event,
-    //     chartContext,
-    //     seriesIndex,
-    //     dataPointIndex,
-    //     config
-    //   );
-    // }
-    // function selection(chartContext: any, { xaxis, yaxis }: any) {
-    //   console.log("selection", chartContext, xaxis, yaxis);
-    // }
-    // function dataPointSelection(event: any, chartContext: any, config: any) {
-    //   console.log("dataPointSelection", event, chartContext, config);
-    // }
-
-    function addRule(id_chart: number, index: number) {
-      app_state.value.chartRules[0].id_diagram = id_chart;
-      app_state.value.chartRules[0].exclude_fields_id[0] = index;
-    }
 
     async function load() {
       try {
         const chartsResp = await axios.post("/diagrams");
-        console.log(chartsResp.data);
+        // console.log(chartsResp.data);
         app_state.value.chartsGroup = new ChartGroup(chartsResp.data);
       } catch (err: any) {
         console.log(err);
       } finally {
         app_state.value.loading = false;
       }
-      console.log(app_state.value.chartsGroup.charts);
+      // console.log(app_state.value.chartsGroup.charts);
     }
 
     async function filter() {
-      console.log("befo filter", app_state.value.chartsGroup.charts);
       app_state.value.loading = true;
       try {
         const chartsResp = await axios.post(
@@ -101,38 +55,32 @@ export default defineComponent({
       } finally {
         app_state.value.loading = false;
       }
-      console.log("afte filter", app_state.value.chartsGroup.charts);
     }
-    function log(data: any) {
-      console.log(data);
+
+    function hideRefreshData(data: changeData) {
+      app_state.value.chartsGroup.changeVisible(
+        data.id_chart,
+        data.changeSerieIndex
+      );
+      app_state.value.chartRules = app_state.value.chartsGroup.get_rules();
+      filter();
     }
 
     return {
       app_state,
       load,
       filter,
-      addRule,
-      log,
-      // options,
-      // series,
-      // click,
-      // legendClick,
-      // markerClick,
-      // selection,
-      // dataPointSelection,
+      hideRefreshData,
     };
   },
   created() {
     this.load();
-    // setTimeout(() => {
-    //   this.filter();
-    // }, 3000);
   },
 });
 </script>
 
 <template>
-  <div class="chart-group">
+  <div class="chart-group" v-if="app_state.chartsGroup.charts">
     <h2>{{ app_state.chartsGroup.name }}</h2>
     <p v-html="app_state.chartsGroup.description"></p>
 
@@ -141,16 +89,13 @@ export default defineComponent({
       :key="c.id"
       class="chart-wrapper"
     >
-      <chart
-        :chart="c"
-        @addRule="
-          (e) => {
-            addRule(e.id, e.index);
-            filter();
-          }
-        "
-      />
+      <chart :chart="c" @hideData="hideRefreshData" />
     </div>
+  </div>
+  <div v-else class="loader">
+    <div class="inner one"></div>
+    <div class="inner two"></div>
+    <div class="inner three"></div>
   </div>
 </template>
 
@@ -166,6 +111,70 @@ export default defineComponent({
   float: left;
   transition: width 0.2s;
   margin: 10px;
+}
+
+.loader {
+  left: calc(50% - 32px);
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  perspective: 800px;
+}
+
+.inner {
+  position: absolute;
+  box-sizing: border-box;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+}
+
+.inner.one {
+  left: 0%;
+  top: 0%;
+  animation: rotate-one 1s linear infinite;
+  border-bottom: 3px solid #efeffa;
+}
+
+.inner.two {
+  right: 0%;
+  top: 0%;
+  animation: rotate-two 1s linear infinite;
+  border-right: 3px solid #efeffa;
+}
+
+.inner.three {
+  right: 0%;
+  bottom: 0%;
+  animation: rotate-three 1s linear infinite;
+  border-top: 3px solid #efeffa;
+}
+
+@keyframes rotate-one {
+  0% {
+    transform: rotateX(35deg) rotateY(-45deg) rotateZ(0deg);
+  }
+  100% {
+    transform: rotateX(35deg) rotateY(-45deg) rotateZ(360deg);
+  }
+}
+
+@keyframes rotate-two {
+  0% {
+    transform: rotateX(50deg) rotateY(10deg) rotateZ(0deg);
+  }
+  100% {
+    transform: rotateX(50deg) rotateY(10deg) rotateZ(360deg);
+  }
+}
+
+@keyframes rotate-three {
+  0% {
+    transform: rotateX(35deg) rotateY(55deg) rotateZ(0deg);
+  }
+  100% {
+    transform: rotateX(35deg) rotateY(55deg) rotateZ(360deg);
+  }
 }
 
 @media only screen and (min-width: 600px) {
