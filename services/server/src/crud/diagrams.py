@@ -1,11 +1,8 @@
-import imp
-from tortoise.expressions import Q, Expression
-from tortoise import filters
+from tortoise.expressions import Q
 from tortoise.functions import Count
-from typing import List, Tuple
+from typing import List
 
 from src.schemas.records import RecordSchema
-from src.schemas.records import CategoriesRecordSchema
 from src.database.models import Records
 from src.schemas.diagram import DiagramRule
 from src.schemas.diagram import DiagramData

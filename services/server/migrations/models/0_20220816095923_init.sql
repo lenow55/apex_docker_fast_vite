@@ -1,12 +1,9 @@
 -- upgrade --
 CREATE TABLE IF NOT EXISTS "records" (
     "id" SERIAL NOT NULL PRIMARY KEY,
-    "full_name" VARCHAR(50),
-    "val_1" BOOL NOT NULL  DEFAULT False,
-    "val_2" BOOL NOT NULL  DEFAULT False,
-    "val_3" BOOL NOT NULL  DEFAULT False,
-    "val_4" BOOL NOT NULL  DEFAULT False,
-    "val_5" BOOL NOT NULL  DEFAULT False
+    "blocked_acess" INT NOT NULL  DEFAULT 0,
+    "age_limit" INT NOT NULL,
+    "theam_restriction" INT NOT NULL
 );
 CREATE TABLE IF NOT EXISTS "aerich" (
     "id" SERIAL NOT NULL PRIMARY KEY,
