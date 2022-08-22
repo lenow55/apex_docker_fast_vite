@@ -5,8 +5,8 @@ import axios from 'axios'
 import App from './App.vue'
 import router from './router'
 
-// axios.defaults.baseURL = "/api"
-axios.defaults.baseURL = "http://localhost:5000"
+axios.defaults.baseURL = "/api"
+//axios.defaults.baseURL = "http://localhost:5000"
 
 const app = createApp(App)
 
