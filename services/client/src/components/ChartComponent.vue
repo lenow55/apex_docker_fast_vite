@@ -43,6 +43,10 @@ export default defineComponent({
         },
         labels: this.chart.generateCategories(),
         legend: {
+          fontSize: '16px',
+          labels: {
+            colors: [document.documentElement.style.getPropertyValue('--color-text')]
+          },
           onItemClick: {
             toggleDataSeries: true, //эта штука вкрубает нажатие на легенду
           },
