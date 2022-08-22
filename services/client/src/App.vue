@@ -32,7 +32,7 @@ import HelloWorld from "@/components/HelloWorld.vue";
 @import "@/assets/base.css";
 
 #app {
-  max-width: 1280px;
+  max-width: 2048px;
   margin: 0 auto;
   padding: 2rem;
 
@@ -41,12 +41,18 @@ import HelloWorld from "@/components/HelloWorld.vue";
 
 header {
   line-height: 1.5;
-  max-height: 100vh;
+  /* max-height: 100vh; */
 }
 
 .logo {
   display: block;
   margin: 0 auto 2rem;
+}
+
+.wrapper {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
 }
 
 a,
@@ -87,7 +93,7 @@ nav a:first-of-type {
   border: 0;
 }
 
-@media (min-width: 1024px) {
+@media (min-width: 1920px) {
   body {
     display: flex;
     place-items: center;
@@ -95,7 +101,7 @@ nav a:first-of-type {
 
   #app {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 2fr;
     padding: 0 2rem;
   }
 
@@ -109,6 +115,7 @@ nav a:first-of-type {
     display: flex;
     place-items: flex-start;
     flex-wrap: wrap;
+    justify-content: space-between;
   }
 
   .logo {

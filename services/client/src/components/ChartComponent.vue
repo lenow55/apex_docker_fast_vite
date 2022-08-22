@@ -6,6 +6,8 @@
     :series="chart.generateSerie()"
     @dataPointSelection="dataPointSelection"
     :key="chart.id"
+    width=100%
+    height=100%
   >
   </apexchart>
 </template>

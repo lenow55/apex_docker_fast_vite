@@ -83,13 +83,14 @@ export default defineComponent({
   <div class="chart-group" v-if="app_state.chartsGroup.charts">
     <h2>{{ app_state.chartsGroup.name }}</h2>
     <p v-html="app_state.chartsGroup.description"></p>
-
-    <div
-      v-for="c in app_state.chartsGroup.charts"
-      :key="c.id"
-      class="chart-wrapper"
-    >
-      <chart :chart="c" @hideData="hideRefreshData" />
+    <div class="chart-container">
+      <div
+        v-for="c in app_state.chartsGroup.charts"
+        :key="c.id"
+        class="chart-wrapper"
+      >
+        <chart :chart="c" @hideData="hideRefreshData" />
+      </div>
     </div>
   </div>
   <div v-else class="loader">
@@ -100,19 +101,6 @@ export default defineComponent({
 </template>
 
 <style>
-#app {
-  display: flex;
-  flex-direction: column;
-}
-
-.chart-wrapper {
-  display: block;
-  width: 100%;
-  float: left;
-  transition: width 0.2s;
-  margin: 10px;
-}
-
 .loader {
   left: calc(50% - 32px);
   width: 64px;
@@ -149,7 +137,7 @@ export default defineComponent({
   animation: rotate-three 1s linear infinite;
   border-top: 3px solid #efeffa;
 }
-
+/* 
 @keyframes rotate-one {
   0% {
     transform: rotateX(35deg) rotateY(-45deg) rotateZ(0deg);
@@ -175,17 +163,36 @@ export default defineComponent({
   100% {
     transform: rotateX(35deg) rotateY(55deg) rotateZ(360deg);
   }
+} */
+
+.chart-container {
+  display: grid;
+  gap: 20px;
+
+  /* ! */
+  grid-template-columns: 800px;
+  grid-template-rows: repeat(3, 800px);
 }
 
-@media only screen and (min-width: 600px) {
-  .chart-wrapper {
-    width: 50%;
+@media (min-width: 1224px) {
+  .chart-container {
+    display: grid;
+    gap: 20px;
+
+    /* ! */
+    grid-template-columns: 700px 400px;
+    grid-template-rows: 700px 700px;
   }
 }
 
-@media (min-width: 1024px) {
-  .chart-wrapper {
-    width: 31%;
+@media (min-width: 1920px) {
+  .chart-container {
+    display: grid;
+    gap: 20px;
+
+    /* ! */
+    grid-template-columns: 500px 500px 800px;
+    grid-template-rows: repeat(1, 500px);
   }
 }
 </style>
