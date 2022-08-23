@@ -28,7 +28,8 @@ async def create_records(records: List[RecordSchema]) -> Response:
 
 async def get_records():
     try:
-        model = await RecordQueryMD.from_queryset(Records.all())
-        return model.dict()
+        #model = await RecordQueryMD.from_queryset(Records.all())
+        #return model.dict()
+        return await Records.all().values(*RecordSchema.__fields__)
     except Exception:
         raise HTTPException(status_code=400, detail=f"Произошла какая-то ошибка")
