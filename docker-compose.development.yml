@@ -2,12 +2,19 @@ version: '3'
 
 services:
   server:
+    build:
+      context: ./services/server
+      dockerfile: Dockerfile.Dev
     volumes:
       - ./services/server:/app
-    command: uvicorn src.main:app --reload --host 0.0.0.0 --port 5000
+    command: uvicorn src.main:app --reload --host 0.0.0.0 --port 5001
+    ports:
+      - 5001:5001
     environment:
       DATABASE_URL: postgres://apex_fastapi:LGIKLKks87hk65T@db:5432/apex_fastapi_dev
-      BASE_URL: http://localhost:5000
+      BASE_URL: http://localhost:8090
+      ROOT_PATH:
+      DEBUG: True
 
   client:
     build:
@@ -18,8 +25,8 @@ services:
     volumes:
       - './services/client:/app'
       - '/usr/src/app/services/client/node_modules'
-        #environment:
-        #  BASE_URL: /api
+    environment:
+      BASE_URL: localhost:5001
     command: npm run dev
 
   db:
