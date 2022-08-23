@@ -4,14 +4,15 @@ from fastapi.middleware.cors import CORSMiddleware
 from tortoise import Tortoise
 from src.database.register import register_tortoise
 from src.database.config import TORTOISE_ORM
+from src.env import get_url, get_root, get_debug
 
 Tortoise.init_models(["src.database.models"], "models")
 
-app = FastAPI()
+app = FastAPI(root_path=get_root())
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:8080"],
+    allow_origins=[get_url()],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -28,7 +29,7 @@ def test():
 register_tortoise(app, config=TORTOISE_ORM, generate_schemas=False)
 
 
-debug = True
+debug = get_debug()
 print(debug)
 if debug == True:
     from tortoise.log import logger, db_client_logger
