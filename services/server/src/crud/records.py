@@ -1,7 +1,7 @@
 from fastapi import HTTPException, Response
 
 from src.database.models import Records
-from src.schemas.records import RecordQueryMD, RecordSchema
+from src.schemas.records import RecordSchema
 
 from typing import List
 

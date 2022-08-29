@@ -11,7 +11,7 @@ COPY public/ ./public
 COPY env.d.ts .
 COPY .env.production .
 COPY index.html .
-COPY tsconfig* .
+COPY tsconfig* ./
 COPY vite.config.ts .
 RUN ls
 RUN npm install
