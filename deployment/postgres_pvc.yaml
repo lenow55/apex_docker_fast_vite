@@ -1,0 +1,17 @@
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  labels:
+    type: local
+    app.kubernetes.io/name: postgres-pv
+    app.kubernetes.io/part-of: apexfastapi
+    app.kubernetes.io/version: v1
+  name: postgres-pvc
+  namespace: apexfastapi
+spec:
+  storageClassName: local-storage
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi

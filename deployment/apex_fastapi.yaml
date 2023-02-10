@@ -1,0 +1,136 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: apex
+  namespace: apexfastapi
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: web
+  namespace: apexfastapi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: apex-svc
+  namespace: apexfastapi
+spec:
+  ports:
+    - name: http
+      port: 5000
+      targetPort: 5000
+  selector:
+    app: apex-svc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: web-svc
+  namespace: apexfastapi
+spec:
+  ports:
+    - name: http
+      port: 80
+      targetPort: 8090
+  selector:
+    app: web-svc
+  type: ClusterIP
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app.kubernetes.io/name: apex
+    app.kubernetes.io/part-of: apexfastapi
+    app.kubernetes.io/version: v1
+  name: apex
+  namespace: apexfastapi
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: apex-svc
+      version: v1
+  template:
+    metadata:
+      labels:
+        app: apex-svc
+        version: v1
+    spec:
+      initContainers:
+        - name: init-postgres-service
+          image: postgres:14-alpine
+          command: ['sh', '-c',
+            'until pg_isready -h postgres-svc-apex.$(cat /var/run/secrets/kubernetes.io/serviceaccount/namespace).svc.cluster.local -p 5432;
+            do echo waiting for database; sleep 2; done;']
+
+      containers:
+        - env:
+            - name: ROOT_PATH
+              value: "/api"
+            - name: BASE_URL
+              value: "/"
+            - name: DEBUG
+              value: "True"
+          envFrom:
+            - secretRef:
+                name: apex-svc-secret
+          image: lenow/kuber_apex_vite_server:v1
+          command:
+            - "uvicorn"
+          args:
+            - "src.main:app"
+            - "--host"
+            - "0.0.0.0"
+            - "--port"
+            - "5000"
+            - "--timeout-keep-alive"
+            - "60"
+            - "--limit-max-requests"
+            - "1000"
+          name: apex-svc
+          ports:
+            - containerPort: 5000
+              name: apex-server
+          resources:
+            requests:
+              cpu: 100m
+      serviceAccountName: apex
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app.kubernetes.io/name: web
+    app.kubernetes.io/part-of: apexfastapi
+    app.kubernetes.io/version: v1
+  name: web
+  namespace: apexfastapi
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: web-svc
+      version: v1
+  template:
+    metadata:
+      labels:
+        app: web-svc
+        version: v1
+    spec:
+      containers:
+        - env:
+            - name: BASE_URL
+              value: "/api"
+          image: lenow/kuber_apex_vite_client:v1.5
+          command:
+            - "nginx"
+          name: web-svc
+          ports:
+            - containerPort: 8090
+              name: http
+          resources:
+            requests:
+              cpu: 100m
+      serviceAccountName: web

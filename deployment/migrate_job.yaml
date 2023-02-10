@@ -1,0 +1,26 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: "migration-job"
+  namespace: apexfastapi
+spec:
+  backoffLimit: 0
+  template:
+    metadata:
+      name: "migration-job-pod"
+    spec:
+      restartPolicy: Never
+      containers:
+      - name: db-migrations
+        image: lenow/kuber_apex_vite_server:v1
+        envFrom:
+          - secretRef:
+              name: apex-svc-secret
+        command: ["/bin/sh", "-c"]
+        args:
+          - aerich init -t src.database.config.TORTOISE_ORM && aerich init-db
+        volumeMounts:
+         - name: migrations
+           mountPath: "/migrations/"
+      volumes:
+        - name: migrations

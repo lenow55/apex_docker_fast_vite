@@ -13,7 +13,6 @@ COPY .env.production .
 COPY index.html .
 COPY tsconfig* ./
 COPY vite.config.ts .
-RUN ls
 RUN npm install
 
 
@@ -21,6 +20,6 @@ RUN npm run build-only
 
 FROM nginx
 COPY nginx.conf /etc/nginx/
+RUN mkdir /var/www
+RUN mkdir /var/www/logs
 COPY  --from=vue-builder /app/dist /usr/share/nginx/html
-EXPOSE 8090
-CMD ["nginx", "-g", "daemon off;"]

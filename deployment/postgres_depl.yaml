@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app.kubernetes.io/name: postgres
+    app.kubernetes.io/part-of: apexfastapi
+    app.kubernetes.io/version: v1
+  name: postgres
+  namespace: apexfastapi
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: postgres
+      version: v1
+  template:
+    metadata:
+      labels:
+        app: postgres
+        version: v1
+    spec:
+      containers:
+      - name: postgres
+        image: postgres:14-alpine
+        ports:
+          - containerPort: 5432
+        envFrom:
+          - secretRef:
+              name: postgres-secret
+        volumeMounts:
+        - name: postgres-database-storage
+          mountPath: /var/lib/postgresql/data
+      volumes:
+      - name: postgres-database-storage
+        persistentVolumeClaim:
+          claimName: postgres-pvc
