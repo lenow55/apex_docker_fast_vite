@@ -20,7 +20,7 @@ spec:
     required:
       nodeSelectorTerms:
       - matchExpressions:
-        - key: db-role
+        - key: kubernetes.io/hostname
           operator: In
           values:
-          - backup
+          - kube-node1

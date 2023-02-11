@@ -20,8 +20,34 @@ spec:
     required:
       nodeSelectorTerms:
       - matchExpressions:
-        - key: db-role
+        - key: kubernetes.io/hostname
           operator: In
           values:
-          - db
-          - backup
+          - kube-node1
+---
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  labels:
+    type: local
+    app.kubernetes.io/name: postgres-pv2
+  name: postgres-pv2
+  namespace: apexfastapi
+spec:
+  capacity:
+   storage: 1Gi
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: local-postgres-storage
+  local:
+    path: /mnt/postgres
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: kubernetes.io/hostname
+          operator: In
+          values:
+          - kube-node2
