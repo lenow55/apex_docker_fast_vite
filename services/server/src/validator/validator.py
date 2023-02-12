@@ -1,20 +1,8 @@
 from typing import List
 
 from tortoise.expressions import Q
+from src.database.models import ColumnsId, Acess, AgeLimit, TheamRestriction
 from src.schemas.diagram import Data, DiagramData, DiagramRule
-
-
-class column2id():
-    id: int
-    name: str
-    db_name: str
-    description: str
-
-    def __init__(self, id, name, db_name, description):
-        self.id = id
-        self.name = name
-        self.db_name = db_name
-        self.description = description
 
 
 class cat2id():
@@ -25,42 +13,68 @@ class cat2id():
         self.id = id
         self.name = name
 
+
+class column2id():
+    id: ColumnsId
+    name: str
+    db_name: str
+    description: str
+    values: list[cat2id]
+
+    def __init__(self, id, name, db_name, description, values):
+        self.id = id
+        self.name = name
+        self.db_name = db_name
+        self.description = description
+        self.values = values
+
+
 class Validator():
     column_to_id: List[column2id] = [
-        column2id(0, "разрешено/запрещено", "blocked_acess", "отношение заблокированных и разрешённых ресурсов"),
-        column2id(1, "Возраст", "age_limit", "Возрастное ограничение"),
-        column2id(2, "Темы", "theam_restriction", "Ограничение по темам"),
-    ]
-    cat_to_id: List[cat2id] = [
-        cat2id(0, "Разрешено"),
-        cat2id(1, "Запрещено"),
-        cat2id(2, "0+"),
-        cat2id(3, "6+"),
-        cat2id(4, "12+"),
-        cat2id(5, "16+"),
-        cat2id(6, "18+"),
-        cat2id(7, "Бизнес"),
-        cat2id(8, "Вредоносные сайты"),
-        cat2id(9, "Детям"),
-        cat2id(10, "Загрузка файлов"),
-        cat2id(11, "Здоровье"),
-        cat2id(12, "Игры и развлечения"),
-        cat2id(13, "Культура"),
-        cat2id(14, "Мультимедиа"),
-        cat2id(15, "Наука и технологии"),
-        cat2id(16, "Ненормативная лексика"),
-        cat2id(17, "Новости и СМИ"),
-        cat2id(18, "Образование"),
-        cat2id(19, "Общество и политика"),
-        cat2id(20, "Поисковые системы"),
-        cat2id(21, "Пользовательский контент"),
-        cat2id(22, "Прокси и анонимайзеры"),
-        cat2id(23, "Противоправные сайты"),
-        cat2id(24, "Реклама и маркетинг"),
-        cat2id(25, "Социальные сети"),
-        cat2id(26, "Спорт и хобби"),
-        cat2id(27, "Справочная информация "),
-        cat2id(28, "Без категории")
+        column2id(
+            ColumnsId.BLOCKED_ACESS, "разрешено/запрещено", "blocked_acess",
+            "отношение заблокированных и разрешённых ресурсов", [
+                cat2id(Acess.ALLOW._value_, "Разрешено"),
+                cat2id(Acess.DENY._value_, "Запрещено")
+            ]
+        ),
+        column2id(
+            ColumnsId.AGE_LIMIT, "Возраст", "age_limit", "Возрастное ограничение",
+            [
+                cat2id(AgeLimit.NULL.value, "0+"),
+                cat2id(AgeLimit.SIX._value_, "6+"),
+                cat2id(AgeLimit.TWELVE._value_, "12+"),
+                cat2id(AgeLimit.SIXTEEN._value_, "16+"),
+                cat2id(AgeLimit.XXX._value_, "18+")
+            ]
+        ),
+        column2id(
+            ColumnsId.THEAM_RESTRICTION, "Темы", "theam_restriction", "Ограничение по темам",
+            [
+                cat2id(TheamRestriction.BUSINESS.value, "Бизнес"),
+                cat2id(TheamRestriction.MALICIOUS_SITE._value_, "Вредоносные сайты"),
+                cat2id(TheamRestriction.FOR_CHILD._value_, "Детям"),
+                cat2id(TheamRestriction.FILE_DOWNLOAD._value_, "Загрузка файлов"),
+                cat2id(TheamRestriction.HEALTH._value_, "Здоровье"),
+                cat2id(TheamRestriction.GAME_ENTERTAINMENT._value_, "Игры и развлечения"),
+                cat2id(TheamRestriction.CULTURE._value_, "Культура"),
+                cat2id(TheamRestriction.MULTIMEDIA._value_, "Мультимедиа"),
+                cat2id(TheamRestriction.SCIENCE_AND_TECHNOLOGY._value_, "Наука и технологии"),
+                cat2id(TheamRestriction.PROFANITY._value_, "Ненормативная лексика"),
+                cat2id(TheamRestriction.NEWS_AND_MEDIA._value_, "Новости и СМИ"),
+                cat2id(TheamRestriction.EDUCATION._value_, "Образование"),
+                cat2id(TheamRestriction.SOCIETY_AND_POLITICS._value_, "Общество и политика"),
+                cat2id(TheamRestriction.SEARCH_ENGINES._value_, "Поисковые системы"),
+                cat2id(TheamRestriction.USER_CONTENT._value_, "Пользовательский контент"),
+                cat2id(TheamRestriction.PROXIES_AND_ANONYMIZERS._value_, "Прокси и анонимайзеры"),
+                cat2id(TheamRestriction.ILLEGAL_WEBSITES._value_, "Противоправные сайты"),
+                cat2id(TheamRestriction.ADVERTISING_AND_MARKETING._value_, "Реклама и маркетинг"),
+                cat2id(TheamRestriction.SOCIAL_NETWORKS._value_, "Социальные сети"),
+                cat2id(TheamRestriction.SPORTS_AND_HOBBIES._value_, "Спорт и хобби"),
+                cat2id(TheamRestriction.BACKGROUND_INFORMATION._value_, "Справочная информация "),
+                cat2id(TheamRestriction.NON_THEAM._value_, "Без категории")
+            ]
+        )
     ]
 
     def serialise(self, diagram):
@@ -80,7 +94,7 @@ class Validator():
     def get_fields(self):
         return (i.db_name for i in self.column_to_id)
 
-    def get_filters(self, rules_list: List[DiagramRule])  -> List[Q]:
+    def get_filters(self, rules_list: List[DiagramRule]) -> List[Q]:
         try:
             rules_list = list(set(rules_list))
         except TypeError:
@@ -89,7 +103,7 @@ class Validator():
         query: List[Q] = []
         try:
             for rule in rules_list:
-                dt = [i for i in self.column_to_id if i.id == rule.id_diagram][0]
+                dt = self.column_to_id.__getitem__(rule.id_diagram.value)
                 for index in rule.exclude_fields_id:
                     cat_id = [i.id for i in self.cat_to_id if i.id == index][0]
                     query.append(~Q(**{dt.db_name: cat_id}))
