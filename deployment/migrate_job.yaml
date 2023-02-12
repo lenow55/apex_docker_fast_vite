@@ -12,10 +12,18 @@ spec:
       restartPolicy: Never
       containers:
       - name: db-migrations
-        image: lenow/kuber_apex_vite_server:v1
-        envFrom:
-          - secretRef:
-              name: apex-svc-secret
+        image: lenow/kuber_apex_vite_server:v1.1
+        env:
+            - name: DB_HOST
+              valueFrom: {secretKeyRef: {name: postgres-cluster-pguser-apexfastapi, key: pgbouncer-host}}
+            - name: DB_PORT
+              valueFrom: {secretKeyRef: {name: postgres-cluster-pguser-apexfastapi, key: pgbouncer-port}}
+            - name: DB_USER
+              valueFrom: {secretKeyRef: {name: postgres-cluster-pguser-apexfastapi, key: user}}
+            - name: DB_PASSWORD
+              valueFrom: {secretKeyRef: {name: postgres-cluster-pguser-apexfastapi, key: password}}
+            - name: DB_NAME
+              valueFrom: {secretKeyRef: {name: postgres-cluster-pguser-apexfastapi, key: dbname}}
         command: ["/bin/sh", "-c"]
         args:
           - aerich init -t src.database.config.TORTOISE_ORM && aerich init-db
