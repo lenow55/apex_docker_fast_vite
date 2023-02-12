@@ -62,7 +62,7 @@ spec:
         - name: init-postgres-service
           image: postgres:14-alpine
           command: ['sh', '-c',
-            'until pg_isready -h postgres-svc-apex.$(cat /var/run/secrets/kubernetes.io/serviceaccount/namespace).svc.cluster.local -p 5432;
+            'until pg_isready -h postgres-cluster-pgbouncer.$(cat /var/run/secrets/kubernetes.io/serviceaccount/namespace).svc.cluster.local -p 5432;
             do echo waiting for database; sleep 2; done;']
 
       containers:
@@ -73,9 +73,8 @@ spec:
               value: "/"
             - name: DEBUG
               value: "True"
-          envFrom:
-            - secretRef:
-                name: apex-svc-secret
+            - name: DATABASE_URL
+              valueFrom: {secretKeyRef: {name: postgres-cluster-pguser-apexfastapi, key: pgbouncer-uri}}
           image: lenow/kuber_apex_vite_server:v1
           command:
             - "uvicorn"
