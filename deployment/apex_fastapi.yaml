@@ -68,15 +68,16 @@ spec:
       containers:
         - env:
             - name: ROOT_PATH
-              value: "/api"
+              #value: "/api"
+              value: "/"
             - name: BASE_URL
               value: "/"
             - name: DEBUG
               value: "True"
             - name: DB_HOST
-              valueFrom: {secretKeyRef: {name: postgres-cluster-pguser-apexfastapi, key: pgbouncer-host}}
+              valueFrom: {secretKeyRef: {name: postgres-cluster-pguser-apexfastapi, key: host}}
             - name: DB_PORT
-              valueFrom: {secretKeyRef: {name: postgres-cluster-pguser-apexfastapi, key: pgbouncer-port}}
+              valueFrom: {secretKeyRef: {name: postgres-cluster-pguser-apexfastapi, key: port}}
             - name: DB_USER
               valueFrom: {secretKeyRef: {name: postgres-cluster-pguser-apexfastapi, key: user}}
             - name: DB_PASSWORD
