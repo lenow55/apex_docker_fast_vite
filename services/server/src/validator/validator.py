@@ -1,4 +1,5 @@
 from typing import List
+from fastapi import Response
 
 from tortoise.expressions import Q
 from src.database.models import ColumnsId, Acess, AgeLimit, TheamRestriction
@@ -78,36 +79,58 @@ class Validator():
     ]
 
     def serialise(self, diagram):
-        name = list(diagram[0])[0]
-        dt = [i for i in self.column_to_id if i.db_name == name][0]
+        print(diagram)
+        name = list(diagram[0][0])[0]
+        col_id = diagram[1]
+        print(name)
+        print(col_id)
         data: List[Data] = []
-        for rec in diagram:
-            id_categorie = int(rec[name])
-            count = rec['count']
-            cat = [i for i in self.cat_to_id if i.id == id_categorie][0]
-            data.append(Data(id=cat.id, name=cat.name, count=count))
+
+        try:
+            # dt = [i for i in self.column_to_id if i.db_name == name][0]
+            dt = self.column_to_id.__getitem__(col_id)
+            print(dt.id)
+            for rec in diagram[0]:
+                id_categorie = rec[name]
+                # тут может возникнуть ошибка
+                print(id_categorie)
+                count = rec['count']
+                cat = dt.values.__getitem__(id_categorie)
+                data.append(Data(id=cat.id, name=cat.name, count=count))
+        except Exception as ex:
+            ex.args = "serialise: ", *ex.args
+            raise
 
         return DiagramData(
             id=dt.id, name=dt.name, description=dt.description, data=data
         )
 
     def get_fields(self):
-        return (i.db_name for i in self.column_to_id)
+        return ((i.db_name, i.id) for i in self.column_to_id)
 
     def get_filters(self, rules_list: List[DiagramRule]) -> List[Q]:
+        print("фильтр")
+        if rules_list == None:
+            return []
+        query: List[Q] = []
+        print(rules_list)
         try:
             rules_list = list(set(rules_list))
-        except TypeError:
-            pass
+        except TypeError as tper:
+            tper.args = "get_filters: type: ", *tper.args
+            raise
+        print(rules_list)
 
-        query: List[Q] = []
         try:
             for rule in rules_list:
+                print(rule)
                 dt = self.column_to_id.__getitem__(rule.id_diagram.value)
+                print(dt)
                 for index in rule.exclude_fields_id:
-                    cat_id = [i.id for i in self.cat_to_id if i.id == index][0]
-                    query.append(~Q(**{dt.db_name: cat_id}))
-        except:
-            pass
+                    cat_id = dt.values.__getitem__(index)
+                    query.append(~Q(**{dt.db_name: cat_id.id}))
+        except Exception as ex:
+            ex.args = "get_filters: ", *ex.args
+            raise
 
         return query

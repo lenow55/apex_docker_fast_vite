@@ -17,7 +17,7 @@ class DiagramData(BaseModel):
 
 
 class DiagramRule(BaseModel):
-    id_diagram: ColumnsId = Field(ge=0, description="The id must be >= 0")
+    id_diagram: ColumnsId
     exclude_fields_id: List[int] = Field(ge=0, description="The id must be >= 0")
     # exclude_fields_id: List[int] = Field(gt=0, description="The id must be greater than zero")
 
