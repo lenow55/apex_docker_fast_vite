@@ -1,9 +1,9 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Response
 from starlette.responses import JSONResponse
 
 import src.crud.records as crud
 from src.schemas.records import RecordSchema
-from fastapi.responses import ORJSONResponse
+from fastapi.responses import ORJSONResponse, PlainTextResponse
 from typing import List
 
 router = APIRouter()
@@ -20,6 +20,7 @@ async def create_record(
 ):
     return await crud.create_record(record)
 
+
 @router.post(
     "/records", response_model=None
 )
@@ -28,6 +29,7 @@ async def create_records(
 ):
     return await crud.create_records(records)
 
+
 @router.get(
     "/records", response_model=List[RecordSchema], response_class=ORJSONResponse
 )
@@ -35,3 +37,10 @@ async def get_records():
     cont = await crud.get_records()
     r = [dict(v) for v in cont]
     return ORJSONResponse(content=r)
+
+
+@router.get(
+    "/records/len", response_class=PlainTextResponse
+)
+async def get_len_records():
+    return await crud.get_records_len()
