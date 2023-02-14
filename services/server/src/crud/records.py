@@ -4,7 +4,7 @@ from fastapi import HTTPException, Response
 from fastapi.responses import PlainTextResponse
 
 from src.database.models import Records
-from src.schemas.records import RecordSchema
+from src.schemas.records import RecordSchema, RecordsOutSchema
 
 
 async def create_record(record: RecordSchema) -> Response:
@@ -31,6 +31,7 @@ async def get_records():
         # model = await RecordQueryMD.from_queryset(Records.all())
         # return model.dict()
         return await Records.all().values(*RecordSchema.__fields__)
+        # return await RecordsOutSchema.from_queryset(Records.all())
     except Exception as ex:
         raise HTTPException(status_code=400, detail=f"Произошла какая-то ошибка, {ex}")
 

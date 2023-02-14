@@ -15,7 +15,7 @@ async def get_diagrams(rules: List[DiagramRule]):  # Тут делаем зап�
     validator = Validator()
     data_diagrams = []
     out_diagrams_data: List[DiagramData] = []
-    print(rules)
+    # print(rules)
     try:
         filters_list = validator.get_filters(rules_list=rules)
         for column, col_id in validator.get_fields():
@@ -23,9 +23,9 @@ async def get_diagrams(rules: List[DiagramRule]):  # Тут делаем зап�
             if len(result) == 0:
                 return Response(status_code=200, content=f"No data by these filters")
             data_diagrams.append((result, col_id))
-        print(data_diagrams)
+        # print(data_diagrams)
         for diagram in data_diagrams:
-            print(type(diagram))
+            # print(type(diagram))
             out_diagrams_data.append(validator.serialise(diagram))
     except Exception as ex:
         raise HTTPException(status_code=500, detail=f"Произошла какая-то ошибка, {ex}")

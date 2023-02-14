@@ -1,6 +1,7 @@
 from fastapi import APIRouter
 from typing import List
 from fastapi import Body
+from fastapi.responses import ORJSONResponse
 from src.crud.diagrams import get_diagrams
 
 from src.schemas.diagram import DiagramRule
@@ -11,7 +12,8 @@ router = APIRouter()
 
 @router.post("/diagrams", response_model=List[DiagramData],
              description="Передаём правила для фильтров на диаграмму,\
-             \n получаем данные для диаграм")
+             \n получаем данные для диаграм",
+             response_class=ORJSONResponse)
 async def get_diagrams_data(
         rules: List[DiagramRule] = Body(
             None,

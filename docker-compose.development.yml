@@ -13,7 +13,7 @@ services:
     environment:
       BASE_URL: http://localhost:8090
       ROOT_PATH: /
-      DEBUG: True
+        #DEBUG: False
       DB_NAME: apex_fastapi_dev
 
   client:
@@ -35,7 +35,9 @@ services:
       POSTGRES_PASSWORD: LGIKLKks87hk65T
       POSTGRES_DB: apex_fastapi_dev
     volumes:
-      - postgres_apex_dev:/var/lib/postgresql/data/
+      #- postgres_apex_dev:/var/lib/postgresql/data/
+      - postgres_apex_dev2:/var/lib/postgresql/data/
 
 volumes:
-  postgres_apex_dev:
+  #postgres_apex_dev:
+  postgres_apex_dev2:

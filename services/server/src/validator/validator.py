@@ -79,21 +79,21 @@ class Validator():
     ]
 
     def serialise(self, diagram):
-        print(diagram)
+        # print(diagram)
         name = list(diagram[0][0])[0]
         col_id = diagram[1]
-        print(name)
-        print(col_id)
+        # print(name)
+        # print(col_id)
         data: List[Data] = []
 
         try:
             # dt = [i for i in self.column_to_id if i.db_name == name][0]
             dt = self.column_to_id.__getitem__(col_id)
-            print(dt.id)
+            # print(dt.id)
             for rec in diagram[0]:
                 id_categorie = rec[name]
                 # тут может возникнуть ошибка
-                print(id_categorie)
+                # print(id_categorie)
                 count = rec['count']
                 cat = dt.values.__getitem__(id_categorie)
                 data.append(Data(id=cat.id, name=cat.name, count=count))
@@ -109,23 +109,23 @@ class Validator():
         return ((i.db_name, i.id) for i in self.column_to_id)
 
     def get_filters(self, rules_list: List[DiagramRule]) -> List[Q]:
-        print("фильтр")
+        # print("фильтр")
         if rules_list == None:
             return []
         query: List[Q] = []
-        print(rules_list)
+        # print(rules_list)
         try:
             rules_list = list(set(rules_list))
         except TypeError as tper:
             tper.args = "get_filters: type: ", *tper.args
             raise
-        print(rules_list)
+        # print(rules_list)
 
         try:
             for rule in rules_list:
-                print(rule)
+                # print(rule)
                 dt = self.column_to_id.__getitem__(rule.id_diagram.value)
-                print(dt)
+                # print(dt)
                 for index in rule.exclude_fields_id:
                     cat_id = dt.values.__getitem__(index)
                     query.append(~Q(**{dt.db_name: cat_id.id}))

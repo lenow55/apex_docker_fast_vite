@@ -22,14 +22,14 @@ def gen_params():
 
 def gen_params2mod():
     blocked_acess = random.randint(0, 1)
-    age_limit = random.randint(0, 5)
+    age_limit = random.randint(0, 4)
     theam_restriction = random.randint(0, 21)
     return [blocked_acess, age_limit, theam_restriction]
 
 def batch_send(size: int = 20):
     obj_list = []
     for j in range(1, size):
-        obj_list.append(Record(*gen_params()))
+        obj_list.append(Record(*gen_params2mod()))
     # print(obj_list)
     # print([obj.__dict__ for obj in obj_list])
     requests.post("http://localhost:5001/records", data=orjson.dumps(
@@ -37,5 +37,5 @@ def batch_send(size: int = 20):
         option=orjson.OPT_NON_STR_KEYS | orjson.OPT_SERIALIZE_NUMPY))
 
 with concurrent.futures.ThreadPoolExecutor(max_workers=100) as executor:
-    for i in range(1, 1000):
+    for i in range(1, 10000):
         executor.submit(batch_send, (50))
