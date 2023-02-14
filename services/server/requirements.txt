@@ -13,12 +13,12 @@ orjson==3.7.12
 pep8==1.7.1
 pycodestyle==2.8.0
 pydantic==1.9.1
-pypika-tortoise==0.1.5
+pypika-tortoise==0.1.6
 pytz==2022.1
 sniffio==1.2.0
 starlette==0.19.1
 toml==0.10.2
 tomlkit==0.11.1
-tortoise-orm==0.19.1
+tortoise-orm==0.19.3
 typing_extensions==4.3.0
 uvicorn==0.18.2
