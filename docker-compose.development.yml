@@ -11,12 +11,10 @@ services:
     ports:
       - 5001:5001
     environment:
-      DATABASE_URL: postgres://apex_fastapi:LGIKLKks87hk65T@db:5432/apex_fastapi_dev
       BASE_URL: http://localhost:8090
-      ROOT_PATH:
-      DEBUG: False
+      ROOT_PATH: /
+      DEBUG: True
       DB_NAME: apex_fastapi_dev
-
 
   client:
     build:
