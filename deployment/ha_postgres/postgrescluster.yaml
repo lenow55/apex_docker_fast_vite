@@ -40,11 +40,15 @@ spec:
               requests:
                 storage: 1Gi
 
-  proxy:
-    pgBouncer:
-      image: registry.developers.crunchydata.com/crunchydata/crunchy-pgbouncer:ubi8-1.17-5
   users:
     - name: apexfastapi
       databases:
         - apex_db
       options: "SUPERUSER"
+    - name: test
+      databases:
+        - test
+
+  proxy:
+    pgBouncer:
+      image: registry.developers.crunchydata.com/crunchydata/crunchy-pgbouncer:ubi8-1.17-5
