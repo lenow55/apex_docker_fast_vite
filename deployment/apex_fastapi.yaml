@@ -84,7 +84,7 @@ spec:
               valueFrom: {secretKeyRef: {name: postgres-cluster-pguser-apexfastapi, key: password}}
             - name: DB_NAME
               valueFrom: {secretKeyRef: {name: postgres-cluster-pguser-apexfastapi, key: dbname}}
-          image: lenow/kuber_apex_vite_server:v1.1
+          image: lenow/kuber_apex_vite_server:v2.1
           command:
             - "uvicorn"
           args:

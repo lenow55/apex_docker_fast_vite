@@ -1,13 +1,13 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: "migration-job"
+  name: "init-job"
   namespace: apexfastapi
 spec:
   backoffLimit: 0
   template:
     metadata:
-      name: "migration-job-pod"
+      name: "init-job-pod"
     spec:
       restartPolicy: Never
       containers:
@@ -26,4 +26,4 @@ spec:
             valueFrom: {secretKeyRef: {name: postgres-cluster-pguser-apexfastapi, key: dbname}}
         command: ["/bin/sh", "-c"]
         args:
-          - aerich init -t src.database.config.TORTOISE_ORM && aerich migrate && aerich upgrade
+          - aerich init -t src.database.config.TORTOISE_ORM && aerich init-db

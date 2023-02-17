@@ -32,10 +32,10 @@ def batch_send(size: int = 20):
         obj_list.append(Record(*gen_params2mod()))
     # print(obj_list)
     # print([obj.__dict__ for obj in obj_list])
-    requests.post("http://localhost:5001/records", data=orjson.dumps(
+    requests.post("http://localhost:5000/records", data=orjson.dumps(
         list([obj.__dict__ for obj in obj_list]),
         option=orjson.OPT_NON_STR_KEYS | orjson.OPT_SERIALIZE_NUMPY))
 
-with concurrent.futures.ThreadPoolExecutor(max_workers=100) as executor:
-    for i in range(1, 10000):
-        executor.submit(batch_send, (50))
+with concurrent.futures.ThreadPoolExecutor(max_workers=10) as executor:
+    for i in range(1, 10):
+        executor.submit(batch_send, (20))
