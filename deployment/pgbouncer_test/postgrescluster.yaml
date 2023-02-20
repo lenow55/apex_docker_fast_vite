@@ -1,0 +1,54 @@
+apiVersion: postgres-operator.crunchydata.com/v1beta1
+kind: PostgresCluster
+metadata:
+  name: postgres-cluster
+  namespace: apexfastapi
+spec:
+  image: registry.developers.crunchydata.com/crunchydata/crunchy-postgres:ubi8-14.6-2
+  postgresVersion: 14
+  instances:
+    - name: instance1
+      replicas: 2
+      dataVolumeClaimSpec:
+        storageClassName: local-postgres-storage
+        accessModes:
+        - ReadWriteOnce
+        resources:
+          requests:
+            storage: 1Gi
+              #      affinity:
+              #        nodeAffinity:
+              #          requiredDuringSchedulingIgnoredDuringExecution:
+              #            nodeSelectorTerms:
+              #            - matchExpressions:
+              #              - key: db-role
+              #                operator: In
+              #                values:
+              #                - db
+              #                - backup
+  backups:
+    pgbackrest:
+      image: registry.developers.crunchydata.com/crunchydata/crunchy-pgbackrest:ubi8-2.41-2
+      repos:
+      - name: repo1
+        volume:
+          volumeClaimSpec:
+            storageClassName: local-backup-storage
+            accessModes:
+            - ReadWriteOnce
+            resources:
+              requests:
+                storage: 1Gi
+
+  users:
+    - name: test
+      databases:
+        - test
+    - name: apex-db-user2
+      databases:
+        - apex-db-base2
+
+  proxy:
+    pgBouncer:
+      image: registry.developers.crunchydata.com/crunchydata/crunchy-pgbouncer:ubi8-1.17-5
+      replicas: 1

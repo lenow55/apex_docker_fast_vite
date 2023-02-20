@@ -1,0 +1,25 @@
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  labels:
+    type: local
+    app.kubernetes.io/name: backup-ha-pv
+  name: backup-ha-pv
+spec:
+  capacity:
+   storage: 1Gi
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: local-backup-storage-ha
+  local:
+    path: /mnt/test/postgres_backup
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: kubernetes.io/hostname
+          operator: In
+          values:
+          - kube-node1

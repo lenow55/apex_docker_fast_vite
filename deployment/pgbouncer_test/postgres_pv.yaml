@@ -1,0 +1,52 @@
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  labels:
+    type: local
+    app.kubernetes.io/name: postgres-ha-pv
+  name: postgres-ha-pv
+spec:
+  capacity:
+   storage: 1Gi
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: local-postgres-ha-storage
+  local:
+    path: /mnt/test/postgres
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: kubernetes.io/hostname
+          operator: In
+          values:
+          - kube-node1
+---
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  labels:
+    type: local
+    app.kubernetes.io/name: postgres-ha-pv2
+  name: postgres-ha-pv2
+  namespace: hippo
+spec:
+  capacity:
+   storage: 1Gi
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: local-postgres-ha-storage
+  local:
+    path: /mnt/test/postgres
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: kubernetes.io/hostname
+          operator: In
+          values:
+          - kube-node2
