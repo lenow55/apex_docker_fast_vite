@@ -15,15 +15,15 @@ spec:
         image: lenow/kuber_apex_vite_server:v2.1
         env:
           - name: DB_HOST
-            valueFrom: {secretKeyRef: {name: postgres-cluster-pguser-apexfastapi, key: host}}
+            valueFrom: {secretKeyRef: {name: postgres-cluster-pguser-apex-db-user2, key: pgbouncer-host}}
           - name: DB_PORT
-            valueFrom: {secretKeyRef: {name: postgres-cluster-pguser-apexfastapi, key: port}}
+            valueFrom: {secretKeyRef: {name: postgres-cluster-pguser-apex-db-user2, key: pgbouncer-port}}
           - name: DB_USER
-            valueFrom: {secretKeyRef: {name: postgres-cluster-pguser-apexfastapi, key: user}}
+            valueFrom: {secretKeyRef: {name: postgres-cluster-pguser-apex-db-user2, key: user}}
           - name: DB_PASSWORD
-            valueFrom: {secretKeyRef: {name: postgres-cluster-pguser-apexfastapi, key: password}}
+            valueFrom: {secretKeyRef: {name: postgres-cluster-pguser-apex-db-user2, key: password}}
           - name: DB_NAME
-            valueFrom: {secretKeyRef: {name: postgres-cluster-pguser-apexfastapi, key: dbname}}
+            valueFrom: {secretKeyRef: {name: postgres-cluster-pguser-apex-db-user2, key: dbname}}
         command: ["/bin/sh", "-c"]
         args:
           - aerich init -t src.database.config.TORTOISE_ORM && aerich init-db
