@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: local-test
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: local-test
+  template:
+    metadata:
+      labels:
+        app: local-test
+    spec:
+      containers:
+      - name: test-container
+        image: registry.k8s.io/busybox # updated after publication (previously used k8s.gcr.io/busybox)
+        command:
+        - "/bin/sh"
+        args:
+        - "-c"
+        - "sleep 100000"
+        volumeMounts:
+        - mountPath: /pgconf/tls
+          name: cert-volume
+          readOnly: true
+      volumes:
+      - name: cert-volume
+        projected:
+          defaultMode: 384
+          sources:
+          - secret:
+              items:
+              - key: tls.crt
+                path: tls.crt
+              - key: tls.key
+                path: tls.key
+              - key: ca.crt
+                path: ca.crt
+              name: hippo-ha-cluster-cert
