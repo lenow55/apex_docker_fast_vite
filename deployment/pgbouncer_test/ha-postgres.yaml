@@ -43,13 +43,21 @@ spec:
     pgBouncer:
       image: registry.developers.crunchydata.com/crunchydata/crunchy-pgbouncer:ubi8-1.17-5
       replicas: 1
-        #affinity:
-        #  podAntiAffinity:
-        #    preferredDuringSchedulingIgnoredDuringExecution:
-        #    - weight: 1
-        #      podAffinityTerm:
-        #        topologyKey: kubernetes.io/hostname
-        #        labelSelector:
-        #          matchLabels:
-        #            postgres-operator.crunchydata.com/cluster: hippo-ha
-        #            postgres-operator.crunchydata.com/role: pgbouncer
+
+  service:
+    type: ClusterIP
+      #  ports:
+      #    - name: patroni
+      #      port: 8008
+      #      targetPort: 8008
+
+          #affinity:
+          #  podAntiAffinity:
+          #    preferredDuringSchedulingIgnoredDuringExecution:
+          #    - weight: 1
+          #      podAffinityTerm:
+          #        topologyKey: kubernetes.io/hostname
+          #        labelSelector:
+          #          matchLabels:
+          #            postgres-operator.crunchydata.com/cluster: hippo-ha
+          #            postgres-operator.crunchydata.com/role: pgbouncer

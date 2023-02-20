@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    postgres-operator.crunchydata.com/cluster: hippo-ha
+    postgres-operator.crunchydata.com/patroni: hippo-ha-ha
+  name: hippo-ha-ha
+  namespace: hippo
+spec:
+  ports:
+  - name: postgres
+    port: 5432
+    protocol: TCP
+    targetPort: postgres
+  - name: patroni
+    port: 8008
+    protocol: TCP
+    targetPort: 8008
+  type: ClusterIP
