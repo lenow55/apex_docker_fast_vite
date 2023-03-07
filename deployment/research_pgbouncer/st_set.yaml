@@ -1,8 +1,6 @@
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  creationTimestamp: "2023-02-17T19:16:02Z"
-  generation: 1
   labels:
     postgres-operator.crunchydata.com/cluster: hippo-ha
     postgres-operator.crunchydata.com/data: postgres
@@ -10,15 +8,6 @@ metadata:
     postgres-operator.crunchydata.com/instance-set: pgha1
   name: hippo-ha-pgha1-bqqk
   namespace: hippo
-  ownerReferences:
-  - apiVersion: postgres-operator.crunchydata.com/v1beta1
-    blockOwnerDeletion: true
-    controller: true
-    kind: PostgresCluster
-    name: hippo-ha
-    uid: a955eafe-79e0-444c-ade9-ee3360e0a3c9
-  resourceVersion: "168088"
-  uid: 9072f396-f8a0-4a25-af46-c839c9895868
 spec:
   podManagementPolicy: OrderedReady
   replicas: 1
@@ -31,7 +20,6 @@ spec:
   serviceName: hippo-ha-pods
   template:
     metadata:
-      creationTimestamp: null
       labels:
         postgres-operator.crunchydata.com/cluster: hippo-ha
         postgres-operator.crunchydata.com/data: postgres
@@ -583,13 +571,3 @@ spec:
         name: dshm
   updateStrategy:
     type: OnDelete
-status:
-  availableReplicas: 1
-  collisionCount: 0
-  currentReplicas: 1
-  currentRevision: hippo-ha-pgha1-bqqk-c8fc44dfb
-  observedGeneration: 1
-  readyReplicas: 1
-  replicas: 1
-  updateRevision: hippo-ha-pgha1-bqqk-c8fc44dfb
-  updatedReplicas: 1

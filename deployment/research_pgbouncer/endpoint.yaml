@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: Endpoints
+metadata:
+  labels:
+    postgres-operator.crunchydata.com/cluster: hippo-ha
+    postgres-operator.crunchydata.com/role: primary
+  name: hippo-ha-primary
+  namespace: hippo
+subsets:
+- addresses:
+  - ip: 10.96.83.7
+  ports:
+  - name: postgres
+    port: 5432
+    protocol: TCP
+  - name: patroni
+    port: 8008
+    protocol: TCP

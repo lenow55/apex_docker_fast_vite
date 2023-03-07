@@ -1,0 +1,12 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    postgres-operator.crunchydata.com/cluster: hippo-ha
+    postgres-operator.crunchydata.com/role: pgpool2
+  name: hippo-ha-pgpool2
+  namespace: hippo
+spec:
+  replicas: 1
+    # serviceName: hippo-ha-pods
+

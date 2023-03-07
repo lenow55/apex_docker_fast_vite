@@ -1,103 +1,33 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: local-test
+  labels:
+    postgres-operator.crunchydata.com/cluster: hippo-ha
+    postgres-operator.crunchydata.com/instance: hippo-ha-pgha5-bqqk
+    postgres-operator.crunchydata.com/instance-set: pgha5
+  name: hippo-ha-pgha5-bqqk
+  namespace: hippo
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: local-test
+      postgres-operator.crunchydata.com/cluster: hippo-ha
+      postgres-operator.crunchydata.com/instance: hippo-ha-pgha5-bqqk
+      postgres-operator.crunchydata.com/instance-set: pgha5
   template:
     metadata:
       labels:
-        app: local-test
+        postgres-operator.crunchydata.com/cluster: hippo-ha
+        postgres-operator.crunchydata.com/instance: hippo-ha-pgha5-bqqk
+        postgres-operator.crunchydata.com/instance-set: pgha5
     spec:
       containers:
       - name: test-container
-        image: registry.k8s.io/busybox # updated after publication (previously used k8s.gcr.io/busybox)
+        image: progrium/busybox
         command:
         - "/bin/sh"
         args:
         - "-c"
         - "sleep 100000"
-        volumeMounts:
-        - mountPath: /pgconf/tls
-          name: cert-volume
-          readOnly: true
-      - command:
-        - bash
-        - -ceu
-        - --
-        - |-
-          monitor() {
-          declare -r directory="/pgconf/tls"
-          exec {fd}<> <(:)
-          while read -r -t 5 -u "${fd}" || true; do
-            if [ "${directory}" -nt "/proc/self/fd/${fd}" ] &&
-              install -D --mode=0600 -t "/tmp/replication" "${directory}"/{replication/tls.crt,replication/tls.key,replication/ca.crt} &&
-              pkill -HUP --exact --parent=1 postgres
-            then
-              exec {fd}>&- && exec {fd}<> <(:)
-              stat --format='Loaded certificates dated %y' "${directory}"
-            fi
-          done
-          }; export -f monitor; exec -a "$0" bash -ceu monitor
-        - replication-cert-copy
-        image: registry.developers.crunchydata.com/crunchydata/crunchy-postgres:ubi8-14.6-2
-        imagePullPolicy: IfNotPresent
-        name: replication-cert-copy
-        resources: {}
-        securityContext:
-          allowPrivilegeEscalation: false
-          capabilities:
-            drop:
-            - ALL
-          privileged: false
-          readOnlyRootFilesystem: true
-          runAsNonRoot: true
-        terminationMessagePath: /dev/termination-log
-        terminationMessagePolicy: File
-        volumeMounts:
-        - mountPath: /pgconf/tls
-          name: cert-volume
-      volumes:
-      - name: cert-volume
-        projected:
-          defaultMode: 384
-          sources:
-          - secret:
-              items:
-              - key: tls.crt
-                path: tls.crt
-              - key: tls.key
-                path: tls.key
-              - key: ca.crt
-                path: ca.crt
-              name: hippo-ha-cluster-cert
-      - name: patroni-config
-        projected:
-          defaultMode: 420
-          sources:
-          - configMap:
-              items:
-              - key: patroni.yaml
-                path: ~postgres-operator_cluster.yaml
-              name: hippo-ha-config
-          - configMap:
-              items:
-              - key: patroni.yaml
-                path: ~postgres-operator_instance.yaml
-              name: hippo-ha-pgha1-bqqk-config
-          - secret:
-              items:
-              - key: patroni.ca-roots
-                path: ~postgres-operator/patroni.ca-roots
-              - key: patroni.crt-combined
-                path: ~postgres-operator/patroni.crt+key
-              name: hippo-ha-pgha1-bqqk-certs
-      - emptyDir:
-          sizeLimit: 16Mi
-        name: tmp
-      - emptyDir:
-          medium: Memory
-        name: dshm
+      serviceAccount: hippo-ha-instance
+      serviceAccountName: hippo-ha-instance
